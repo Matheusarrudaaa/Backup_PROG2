@@ -1,0 +1,101 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+char *verificar_kl_le(char *le);
+
+int main()
+{
+    char *s;
+    s = malloc(2 * sizeof(char));
+	char s2[100] = "(a|b)";
+    strcpy(s, s2);
+    
+	printf("%s\n", verificar_kl_le(s));
+    free(verificar_kl_le(s)); 
+	free(s);
+        return 0;
+}
+
+
+
+
+// apenas "*" quando inicial e final forem "(" e ")", respectivamente e tbm n tem outros parenteses no meio
+//   ex1: a.b.(a|b) --> (a.b.(a|b))*
+//   ex2: (a|b).(a|c) --> ((a|b).(a|c))*
+//   ex3:       (a|b) --> (a|b)*  -->so adiciona o *
+//   ex4:  a          --> a*/
+
+char *verificar_kl_le(char *le)
+{
+    char aux[64];
+    char *aux2 = malloc(2 * sizeof(char));
+	strcpy(aux, le);
+    int x = strlen(aux);
+
+        /* Se so tiver 1 elemento no delta->le*/
+        if(strlen(aux)  == 1)
+        {
+            strcat(aux, "*");
+            strcpy(aux2, aux);
+            return aux2;
+        }
+        /*Se tiver mais de um elemento no delta->le*/
+        if(aux[0] == '(' && aux[strlen(aux) - 1] == ')')
+        {
+            for(int j = 1; j < x - 2; j++)
+                if(aux[j] == '(' || aux[j] == ')')
+                {
+                    sprintf(aux2, "(%s)*", aux);
+                    return aux2;
+                }
+            strcat(aux, "*");
+            strcpy(aux2, aux);
+            return aux2;
+        }
+        else
+			sprintf(aux2, "(%s)*", aux);
+
+return aux2;
+}
+char* verificar_pp_le(char *le1, char *le2)
+{
+char l1[64];
+char l2[64];
+char aux[64];
+strcpy(l1, le1);
+strcpy(l2, le2);
+char *aux = malloc(2 * sizeof(char));
+
+
+if(l1[0] == '(' && le2[0] != '(' && le2[strlen(le2) - 1] != ')')
+{
+	le1[strlen(le1) - 1] =	'|';
+	le2[strlen(le2)] = ')'
+	le2[strlen(le2) + 1] = '\0';
+	strcat(l1, l2);
+	strcpy(aux, l1);
+	return aux;
+}
+if(l1[0] == '(' &&  le1[strlen(le1) - 1] != ')' && le2[0] != '(' && le2[strlen(le2) - 1] != ')')
+{
+le1[strlen(le1) - 1] =	'\0';
+l2[0] = '|';
+strcat(l1, l2);
+strcpy(aux, l1);
+return aux;
+
+}
+if(l1[0] != '('  && le2[0] == '(')
+{
+l2[0] = '|';
+sprintf(aux,"(%s%s", le1, le2);
+return aux;
+}
+
+else
+sprintf(aux,"(%s|%s)", le1, le2);
+
+return aux;
+}
+

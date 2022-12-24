@@ -1,0 +1,1 @@
+gcc exN.c libmhda.c -o exN.x -Wall -Wextra
